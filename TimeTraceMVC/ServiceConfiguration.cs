@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.IdentityModel.Tokens.Jwt;
 using TimeTraceConfiguration;
 using TimeTraceDataAccess.ApplicationContext;
 using TimeTraceService.Application;
@@ -29,6 +29,25 @@ namespace TimeTraceMVC
 		private static void ConfigureKeycloak(IServiceCollection services, IConfiguration configuration)
 		{
 			KeycloakSettings settings = configuration.GetSection(nameof(KeycloakSettings)).Get<KeycloakSettings>();
+
+			JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+			services.AddAuthentication(options =>
+			{
+				options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+			})
+			.AddCookie()
+			.AddOpenIdConnect(options =>
+			{
+				options.Authority = settings.AuthorityUrl;
+				options.ClientId = settings.ClientId;
+				options.ClientSecret = settings.ClientSecret;
+				options.RequireHttpsMetadata = settings.RequireHttpsMetadata;
+				options.SaveTokens = true;
+				options.GetClaimsFromUserInfoEndpoint = true;
+				options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+			});
 		}
 	}
 }

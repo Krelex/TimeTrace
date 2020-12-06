@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using TimeTraceInfrastructure.HttpController;
 using TimeTraceMVC.Models;
 using TimeTraceService.Application;
@@ -38,12 +35,11 @@ namespace TimeTraceMVC.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             var request = CreateServiceRequest<CreateScoreRequest>();
             _applicationService.CreateScore(request);
-
-
 
             return View();
         }
