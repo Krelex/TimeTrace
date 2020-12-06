@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TimeTraceInfrastructure\TimeTraceInfrastructure.csproj" />
     <ProjectReference Include="..\TimeTraceService\TimeTraceService.csproj" />
   </ItemGroup>
 
