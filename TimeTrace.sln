@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTraceMVC", "TimeTraceMVC\TimeTraceMVC.csproj", "{1B144B33-5BF5-4779-8B4F-9FF9C659135B}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TimeTraceDatabase", "TimeTraceDatabase\TimeTraceDatabase.sqlproj", "{2F59C536-3FD2-4C45-8ABA-8474048279F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTraceConfiguration", "TimeTraceConfiguration\TimeTraceConfiguration.csproj", "{34CD6D56-58EE-4830-9AAE-FD8665C11C9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTraceDataAccess", "TimeTraceDataAccess\TimeTraceDataAccess.csproj", "{6CABD011-AD5A-4439-B19A-C5D034596E43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTraceService", "TimeTraceService\TimeTraceService.csproj", "{56175E7D-4C08-4584-ACA9-989D633D7774}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53C5F1DE-9682-4CF4-AD00-0F9EB8018FA3}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerigoner = .dockerigoner
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B144B33-5BF5-4779-8B4F-9FF9C659135B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B144B33-5BF5-4779-8B4F-9FF9C659135B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B144B33-5BF5-4779-8B4F-9FF9C659135B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B144B33-5BF5-4779-8B4F-9FF9C659135B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F59C536-3FD2-4C45-8ABA-8474048279F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F59C536-3FD2-4C45-8ABA-8474048279F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F59C536-3FD2-4C45-8ABA-8474048279F4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2F59C536-3FD2-4C45-8ABA-8474048279F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F59C536-3FD2-4C45-8ABA-8474048279F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F59C536-3FD2-4C45-8ABA-8474048279F4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{34CD6D56-58EE-4830-9AAE-FD8665C11C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34CD6D56-58EE-4830-9AAE-FD8665C11C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34CD6D56-58EE-4830-9AAE-FD8665C11C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34CD6D56-58EE-4830-9AAE-FD8665C11C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CABD011-AD5A-4439-B19A-C5D034596E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CABD011-AD5A-4439-B19A-C5D034596E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CABD011-AD5A-4439-B19A-C5D034596E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CABD011-AD5A-4439-B19A-C5D034596E43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56175E7D-4C08-4584-ACA9-989D633D7774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56175E7D-4C08-4584-ACA9-989D633D7774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56175E7D-4C08-4584-ACA9-989D633D7774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56175E7D-4C08-4584-ACA9-989D633D7774}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6B52CE9-2EE5-461E-ACBE-2F02A1CDFCDA}
+	EndGlobalSection
+EndGlobal

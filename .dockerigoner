@@ -1,0 +1,14 @@
+README.md
+LICENSE
+**/obj
+**/.vs
+**/.vscode
+**/.classpath
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/bin
+**/.toolstarget
