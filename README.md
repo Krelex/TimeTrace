@@ -37,6 +37,12 @@ docker run --name TimeTrace-Keycloak --net keycloak-network -p 8080:8080 -e DB_V
 ```
 if you get *java.lang.RuntimeException: Failed to connect to database* got to `Keycloak` database and allow all permissions (needed to allow 'keycloak' user in SQL Server instance to logon remotely (meaning not just from localhost but any other hosts))
 
+3. Import Keycloak configuration
+	- Open [Keycloak admin console](http://localhost:8080/auth/) and login
+	- Go to *Import*
+	- Take file from `~\TimeTrace\TimeTraceConfiguration\Keycloak\realm-configuration.json`
+	- Import it to Keycloak
+
 - **Application**
 
 1. Build docker image from soruce
