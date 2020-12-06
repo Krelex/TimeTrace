@@ -56,5 +56,14 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="TimeTrace" />
+    <Folder Include="Security" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="TimeTrace\User.Time.sql" />
+    <Build Include="Security\Application.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TimeTrace.compare.scmp" />
   </ItemGroup>
 </Project>
