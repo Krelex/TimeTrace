@@ -2,11 +2,11 @@
 
 namespace TimeTraceService.Application.Models
 {
-    public class CreateScoreRequest : RequestBase
+    public class CreateResultRequest : RequestBase
     {
     }
 
-    public class CreateScoreResponse : ResponseBase<CreateScoreRequest>
+    public class CreateResultResponse : ResponseBase<CreateResultRequest>
     {
     }
 }
