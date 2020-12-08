@@ -8,6 +8,7 @@ using TimeTraceDataAccess.ApplicationContext;
 using TimeTraceDataAccess.ApplicationContext.Models;
 using TimeTraceInfrastructure.Services;
 using TimeTraceService.Application.Dto;
+using TimeTraceService.Application.Enum;
 using TimeTraceService.Application.Models;
 
 namespace TimeTraceService.Application
@@ -44,13 +45,8 @@ namespace TimeTraceService.Application
             try
             {
 
-                UserTime user = new UserTime()
-                {
-                    FirstName = "Fico",
-                    LastName = "Fix",
-                    RaceTime = new TimeSpan(1,5,3)
-                };
-                await _applicationContext.UserTime.AddAsync(user);
+                Result user = _mapper.Map<Result>(request.ResultDto);
+                await _applicationContext.Result.AddAsync(user);
                 await _applicationContext.SaveChangesAsync();
 
                 response.Success = true;
@@ -73,7 +69,10 @@ namespace TimeTraceService.Application
 
             try
             {
-                List<UserTime> results = await _applicationContext.UserTime.ToListAsync();
+                List<Result> results = await _applicationContext.Result
+                                                                .AsNoTracking()
+                                                                .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Approved)
+                                                                .ToListAsync();
 
                 response.Results = _mapper.Map<List<ResultDto>>(results);
                 response.Success = true;
@@ -86,9 +85,9 @@ namespace TimeTraceService.Application
             return response;
         }
 
-        public async Task<GetPendingResultResponse> GetPendingResults(GetPendingResultRequest request)
+        public async Task<GetPendingResultsResponse> GetPendingResults(GetPendingResultsRequest request)
         {
-            GetPendingResultResponse response = new GetPendingResultResponse()
+            GetPendingResultsResponse response = new GetPendingResultsResponse()
             {
                 Request = request,
                 ResponseToken = Guid.NewGuid()
@@ -96,12 +95,17 @@ namespace TimeTraceService.Application
 
             try
             {
+                List<Result> results = await _applicationContext.Result
+                                                                .AsNoTracking()
+                                                                .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Pending)
+                                                                .ToListAsync();
 
+                response.Results = _mapper.Map<List<ResultDto>>(results);
                 response.Success = true;
             }
             catch (Exception ex)
             {
-                response = GenericException<GetPendingResultRequest, GetPendingResultResponse>(response, ex);
+                response = GenericException<GetPendingResultsRequest, GetPendingResultsResponse>(response, ex);
             }
 
             return response;
@@ -117,6 +121,10 @@ namespace TimeTraceService.Application
 
             try
             {
+                Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
+                result.Active = false;
+
+                await _applicationContext.SaveChangesAsync();
 
                 response.Success = true;
             }
@@ -138,6 +146,10 @@ namespace TimeTraceService.Application
 
             try
             {
+                Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
+                result.StatusId = (int)request.Status;
+
+                await _applicationContext.SaveChangesAsync();
 
                 response.Success = true;
             }

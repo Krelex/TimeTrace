@@ -9,9 +9,11 @@ namespace TimeTraceMVC.Mapping
     {
         public TimeTraceMappingProfile()
         {
-            CreateMap<UserTime, ResultDto>();
-            CreateMap<ResultDto, ResultViewModel>();
+            CreateMap<Result, ResultDto>();
+            CreateMap<ResultDto, Result>();
 
+            CreateMap<ResultDto, ResultViewModel>();
+            CreateMap<ResultViewModel, ResultDto>();
         }
     }
 }

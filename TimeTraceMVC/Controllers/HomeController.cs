@@ -7,6 +7,8 @@ using System.Diagnostics;
 using TimeTraceInfrastructure.HttpController;
 using TimeTraceMVC.Models;
 using TimeTraceService.Application;
+using TimeTraceService.Application.Dto;
+using TimeTraceService.Application.Enum;
 using TimeTraceService.Application.Models;
 
 namespace TimeTraceMVC.Controllers
@@ -37,12 +39,12 @@ namespace TimeTraceMVC.Controllers
         public IActionResult Index()
         {
             GetResultsRequest request = CreateServiceRequest<GetResultsRequest>();
-            var response = _applicationService.GetResults(request).Result;
+            GetResultsResponse response = _applicationService.GetResults(request).Result;
 
             if (!response.Success)
                 return View("Error");
 
-            var viewResults = _mapper.Map<List<ResultViewModel>>(response.Results) ;
+            List<ResultViewModel> viewResults = _mapper.Map<List<ResultViewModel>>(response.Results) ;
 
             return View();
         }
@@ -50,13 +52,55 @@ namespace TimeTraceMVC.Controllers
         [Authorize]
         public IActionResult Privacy()
         {
+            GetPendingResultsRequest request = CreateServiceRequest<GetPendingResultsRequest>();
+            GetPendingResultsResponse response = _applicationService.GetPendingResults(request).Result;
+
+            if (!response.Success)
+                return View("Error");
+
+            List<ResultViewModel> viewResults = _mapper.Map<List<ResultViewModel>>(response.Results);
+
+            return View();
+        }
+
+        public IActionResult Deactivate(int resultId)
+        {
+            DeactivateResultRequest request = CreateServiceRequest<DeactivateResultRequest>();
+            request.ResultId = resultId;
+
+            DeactivateResultResponse response = _applicationService.DeactivateResult(request).Result;
+
+            if (!response.Success)
+                return View("Error");
+
+            return View("Privacy");
+        }
+
+        public IActionResult Approve(int resultId, int statusId)
+        {
+            ApproveResultRequest request = CreateServiceRequest<ApproveResultRequest>();
+            request.ResultId = resultId;
+            request.Status = (StatusEnum)statusId;
+
+            ApproveResultResponse response = _applicationService.ApproveResult(request).Result;
+
+            if (!response.Success)
+                return View("Error");
+
+            return View("Privacy");
+        }
+
+        [HttpPost]
+        public IActionResult Create(ResultViewModel result)
+        {
             CreateResultRequest request = CreateServiceRequest<CreateResultRequest>();
+            request.ResultDto = _mapper.Map<ResultDto>(result);
             CreateResultResponse response = _applicationService.CreateResult(request).Result;
 
             if (!response.Success)
                 return View("Error");
 
-            return View();
+            return View("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace TimeTraceDataAccess.ApplicationContext.Models
 {
-    public partial class UserTime
+    public partial class Result
     {
         public int Id { get; set; }
         public bool? Active { get; set; }
@@ -13,6 +13,8 @@ namespace TimeTraceDataAccess.ApplicationContext.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public TimeSpan RaceTime { get; set; }
-        public bool IsApproved { get; set; }
+        public int StatusId { get; set; }
+
+        public virtual ResultDcstatus Status { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace TimeTraceService.Application
     {
         Task<CreateResultResponse> CreateResult(CreateResultRequest request);
         Task<GetResultsResponse> GetResults(GetResultsRequest request);
-        Task<GetPendingResultResponse> GetPendingResults(GetPendingResultRequest request);
+        Task<GetPendingResultsResponse> GetPendingResults(GetPendingResultsRequest request);
         Task<DeactivateResultResponse> DeactivateResult(DeactivateResultRequest request);
         Task<ApproveResultResponse> ApproveResult(ApproveResultRequest request);
     }
