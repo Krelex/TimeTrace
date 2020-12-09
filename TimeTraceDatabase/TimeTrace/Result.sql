@@ -9,3 +9,7 @@
     CONSTRAINT [PK_Resutlt] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_StatusId] FOREIGN KEY ([StatusId]) REFERENCES [Application].[Result.DCStatus] ([Id]),
 );
+
+GO
+CREATE NONCLUSTERED INDEX [IX_U_RaceTime]
+    ON [Application].[Result]([RaceTime] ASC);

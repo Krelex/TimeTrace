@@ -72,6 +72,7 @@ namespace TimeTraceService.Application
                 List<Result> results = await _applicationContext.Result
                                                                 .AsNoTracking()
                                                                 .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Approved)
+                                                                .OrderBy(x => x.RaceTime)
                                                                 .ToListAsync();
 
                 response.Results = _mapper.Map<List<ResultDto>>(results);
@@ -97,7 +98,8 @@ namespace TimeTraceService.Application
             {
                 List<Result> results = await _applicationContext.Result
                                                                 .AsNoTracking()
-                                                                .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Pending)
+                                                                .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Pending )
+                                                                .OrderBy(x => x.RaceTime)
                                                                 .ToListAsync();
 
                 response.Results = _mapper.Map<List<ResultDto>>(results);
@@ -148,6 +150,9 @@ namespace TimeTraceService.Application
             {
                 Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
                 result.StatusId = (int)request.Status;
+
+                if (request.Status == StatusEnum.Declined)
+                    result.Active = false;
 
                 await _applicationContext.SaveChangesAsync();
 

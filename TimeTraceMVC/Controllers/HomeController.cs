@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using TimeTraceInfrastructure.HttpController;
 using TimeTraceMVC.Models;
+using TimeTraceMVC.Models.Enum;
 using TimeTraceService.Application;
 using TimeTraceService.Application.Dto;
 using TimeTraceService.Application.Enum;
 using TimeTraceService.Application.Models;
+using X.PagedList;
 
 namespace TimeTraceMVC.Controllers
 {
@@ -36,29 +38,39 @@ namespace TimeTraceMVC.Controllers
 
         #region Actions
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             GetResultsRequest request = CreateServiceRequest<GetResultsRequest>();
             GetResultsResponse response = _applicationService.GetResults(request).Result;
 
             if (!response.Success)
-                return View("Error");
+                return RedirectToAction("Error");
 
-            List<ResultViewModel> viewResults = _mapper.Map<List<ResultViewModel>>(response.Results) ;
+            ResultViewModel.ResetRowCounter();
+            List<ResultViewModel> viewResults = _mapper.Map<List<ResultViewModel>>(response.Results);
+
+            IPagedList<ResultViewModel> pagedResults = viewResults.ToPagedList(page, pageSize);
+            ViewBag.OnePageOfProducts = pagedResults;
+            ViewBag.ResourceControler = ResourceEnum.Index;
 
             return View();
         }
 
-        [Authorize]
-        public IActionResult Privacy()
+        [Authorize("TimeTraceAdmin")]
+        public IActionResult Privacy(int page = 1, int pageSize = 5)
         {
             GetPendingResultsRequest request = CreateServiceRequest<GetPendingResultsRequest>();
             GetPendingResultsResponse response = _applicationService.GetPendingResults(request).Result;
 
             if (!response.Success)
-                return View("Error");
+                return RedirectToAction("Error");
 
+            ResultViewModel.ResetRowCounter();
             List<ResultViewModel> viewResults = _mapper.Map<List<ResultViewModel>>(response.Results);
+
+            IPagedList<ResultViewModel> pagedResults = viewResults.ToPagedList(page, pageSize);
+            ViewBag.OnePageOfProducts = pagedResults;
+            ViewBag.ResourceControler = ResourceEnum.Admin;
 
             return View();
         }
@@ -71,23 +83,23 @@ namespace TimeTraceMVC.Controllers
             DeactivateResultResponse response = _applicationService.DeactivateResult(request).Result;
 
             if (!response.Success)
-                return View("Error");
+                return RedirectToAction("Error");
 
-            return View("Privacy");
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Approve(int resultId, int statusId)
+        public IActionResult Approve(int resultId, StatusEnum statusId)
         {
             ApproveResultRequest request = CreateServiceRequest<ApproveResultRequest>();
             request.ResultId = resultId;
-            request.Status = (StatusEnum)statusId;
+            request.Status = statusId;
 
             ApproveResultResponse response = _applicationService.ApproveResult(request).Result;
 
             if (!response.Success)
-                return View("Error");
+                return RedirectToAction("Error");
 
-            return View("Privacy");
+            return RedirectToAction("Privacy");
         }
 
         [HttpPost]
@@ -98,9 +110,9 @@ namespace TimeTraceMVC.Controllers
             CreateResultResponse response = _applicationService.CreateResult(request).Result;
 
             if (!response.Success)
-                return View("Error");
+                return RedirectToAction("Error");
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

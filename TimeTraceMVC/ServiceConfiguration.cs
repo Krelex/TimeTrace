@@ -32,6 +32,11 @@ namespace TimeTraceMVC
 			});
 
 			services.AddSingleton(mappingConfig.CreateMapper());
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy("TimeTraceAdmin", policy => policy.RequireClaim("client_role", "admin"));
+			});
 		}
 
 		private static void ConfigureKeycloak(IServiceCollection services, IConfiguration configuration)
