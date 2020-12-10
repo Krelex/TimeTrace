@@ -6,12 +6,12 @@ This simple application is for race results submissions and management. It's des
 
 ### Architecture
 
-**TimeTraceDatabase**        : Database source, becuase its based on Entity Framework Database First.
-**TimeTraceConfiugration**   : Configuration project, packages shared across more projects are placed here. Some configuration classes and Keycloak realm-configuration file are put here.
-**TimeTraceInfrastructure**  : Wrapper classes for MVC and service projects are placed here.
-**TimeTraceDataAcces**       : Repository project where EF context and models are scaffolded.
-**TimeTraceService**         : Business logic layer, connect dataAcces layer and presentation layer (MVC).
-**TimeTraceMVC**             : Presentation layer.
+- **TimeTraceDatabase**        : Database source, becuase its based on Entity Framework Database First.
+- **TimeTraceConfiugration**   : Configuration project, packages shared across more projects are placed here. Some configuration classes and Keycloak realm-configuration file are put here.
+- **TimeTraceInfrastructure**  : Wrapper classes for MVC and service projects are placed here.
+- **TimeTraceDataAcces**       : Repository project where EF context and models are scaffolded.
+- **TimeTraceService**         : Business logic layer, connect dataAcces layer and presentation layer (MVC).
+- **TimeTraceMVC**             : Presentation layer.
 
 ### Prerequisites
 
