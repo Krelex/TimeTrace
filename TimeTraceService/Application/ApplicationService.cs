@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using TimeTraceDataAccess.ApplicationContext;
 using TimeTraceDataAccess.ApplicationContext.Models;
@@ -14,163 +16,222 @@ using TimeTraceService.Application.Models;
 
 namespace TimeTraceService.Application
 {
-    public class ApplicationService : DomainServiceBase, IApplicationService
-    {
-        #region Fields
+	public class ApplicationService : DomainServiceBase, IApplicationService
+	{
+		#region Fields
 
-        private readonly ApplicationContext _applicationContext;
-        private readonly IMapper _mapper;
-        private readonly ILogger<ApplicationService> _logger;
+		private readonly ApplicationContext _applicationContext;
+		private readonly IMapper _mapper;
+		private readonly ILogger<ApplicationService> _logger;
 
-        #endregion
+		#endregion
 
-        #region Constructor
+		#region Constructor
 
-        public ApplicationService(ApplicationContext applicationContext, IMapper mapper, ILogger<ApplicationService> logger)
-        {
-            _applicationContext = applicationContext;
-            _mapper = mapper;
-            _logger = logger;
-        }
+		public ApplicationService(ApplicationContext applicationContext, IMapper mapper, ILogger<ApplicationService> logger)
+		{
+			_applicationContext = applicationContext;
+			_mapper = mapper;
+			_logger = logger;
+		}
 
-        #endregion
+		#endregion
 
-        #region IApplicationService
+		#region IApplicationService
 
-        public async Task<CreateResultResponse> CreateResult(CreateResultRequest request)
-        {
-            CreateResultResponse response = new CreateResultResponse()
-            {
-                Request = request,
-                ResponseToken = Guid.NewGuid()
-            };
+		public async Task<CreateResultResponse> CreateResult(CreateResultRequest request)
+		{
+			CreateResultResponse response = new CreateResultResponse()
+			{
+				Request = request,
+				ResponseToken = Guid.NewGuid()
+			};
 
-            try
-            {
+			try
+			{
 
-                Result user = _mapper.Map<Result>(request.ResultDto);
-                await _applicationContext.Result.AddAsync(user);
-                await _applicationContext.SaveChangesAsync();
+				Result user = _mapper.Map<Result>(request.ResultDto);
+				await _applicationContext.Result.AddAsync(user);
+				await _applicationContext.SaveChangesAsync();
 
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-                response = GenericException<CreateResultRequest, CreateResultResponse>(response, ex);
-            }
+				_logger.LogInformation($"Result {user.Id} is successfully  created.");
 
-            return response;
-        }
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				response = GenericException<CreateResultRequest, CreateResultResponse>(response, ex);
+			}
 
-        public async Task<GetResultsResponse> GetResults(GetResultsRequest request)
-        {
-            GetResultsResponse response = new GetResultsResponse()
-            {
-                Request = request,
-                ResponseToken = Guid.NewGuid()
-            };
+			return response;
+		}
 
-            try
-            {
-                List<Result> results = await _applicationContext.Result
-                                                                .AsNoTracking()
-                                                                .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Approved)
-                                                                .OrderBy(x => x.RaceTime)
-                                                                .ToListAsync();
+		public async Task<GetResultsResponse> GetResults(GetResultsRequest request)
+		{
+			GetResultsResponse response = new GetResultsResponse()
+			{
+				Request = request,
+				ResponseToken = Guid.NewGuid()
+			};
 
-                response.Results = _mapper.Map<List<ResultDto>>(results);
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-                response = GenericException<GetResultsRequest, GetResultsResponse>(response, ex);
-            }
+			try
+			{
+				List<Result> results = await _applicationContext.Result
+																.AsNoTracking()
+																.Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Approved)
+																.OrderBy(x => x.RaceTime)
+																.ToListAsync();
 
-            return response;
-        }
+				response.Results = _mapper.Map<List<ResultDto>>(results);
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				response = GenericException<GetResultsRequest, GetResultsResponse>(response, ex);
+			}
 
-        public async Task<GetPendingResultsResponse> GetPendingResults(GetPendingResultsRequest request)
-        {
-            GetPendingResultsResponse response = new GetPendingResultsResponse()
-            {
-                Request = request,
-                ResponseToken = Guid.NewGuid()
-            };
+			return response;
+		}
 
-            try
-            {
-                List<Result> results = await _applicationContext.Result
-                                                                .AsNoTracking()
-                                                                .Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Pending )
-                                                                .OrderBy(x => x.RaceTime)
-                                                                .ToListAsync();
+		public async Task<GetPendingResultsResponse> GetPendingResults(GetPendingResultsRequest request)
+		{
+			GetPendingResultsResponse response = new GetPendingResultsResponse()
+			{
+				Request = request,
+				ResponseToken = Guid.NewGuid()
+			};
 
-                response.Results = _mapper.Map<List<ResultDto>>(results);
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-                response = GenericException<GetPendingResultsRequest, GetPendingResultsResponse>(response, ex);
-            }
+			try
+			{
+				List<Result> results = await _applicationContext.Result
+																.AsNoTracking()
+																.Where(x => x.Active == true && x.StatusId == (int)StatusEnum.Pending)
+																.OrderBy(x => x.RaceTime)
+																.ToListAsync();
 
-            return response;
-        }
+				response.Results = _mapper.Map<List<ResultDto>>(results);
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				response = GenericException<GetPendingResultsRequest, GetPendingResultsResponse>(response, ex);
+			}
 
-        public async Task<DeactivateResultResponse> DeactivateResult(DeactivateResultRequest request)
-        {
-            DeactivateResultResponse response = new DeactivateResultResponse()
-            {
-                Request = request,
-                ResponseToken = Guid.NewGuid()
-            };
+			return response;
+		}
 
-            try
-            {
-                _logger.LogInformation("jesi ovo uspio");
-                Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
-                result.Active = false;
+		public async Task<DeactivateResultResponse> DeactivateResult(DeactivateResultRequest request)
+		{
+			DeactivateResultResponse response = new DeactivateResultResponse()
+			{
+				Request = request,
+				ResponseToken = Guid.NewGuid()
+			};
 
-                await _applicationContext.SaveChangesAsync();
+			try
+			{
+				Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
+				result.Active = false;
 
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                response = GenericException<DeactivateResultRequest, DeactivateResultResponse>(response, ex);
-            }
+				await _applicationContext.SaveChangesAsync();
 
-            return response;
-        }
+				_logger.LogInformation($"Result {result.Id} successfully deactivate");
 
-        public async Task<ApproveResultResponse> ApproveResult(ApproveResultRequest request)
-        {
-            ApproveResultResponse response = new ApproveResultResponse()
-            {
-                Request = request,
-                ResponseToken = Guid.NewGuid()
-            };
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				response = GenericException<DeactivateResultRequest, DeactivateResultResponse>(response, ex);
+			}
 
-            try
-            {
-                Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
-                result.StatusId = (int)request.Status;
+			return response;
+		}
 
-                if (request.Status == StatusEnum.Declined)
-                    result.Active = false;
+		public async Task<ApproveResultResponse> ApproveResult(ApproveResultRequest request)
+		{
+			ApproveResultResponse response = new ApproveResultResponse()
+			{
+				Request = request,
+				ResponseToken = Guid.NewGuid()
+			};
 
-                await _applicationContext.SaveChangesAsync();
+			try
+			{
+				Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
+				result.StatusId = (int)request.Status;
 
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-                response = GenericException<ApproveResultRequest, ApproveResultResponse>(response, ex);
-            }
+				if (request.Status == StatusEnum.Declined)
+					result.Active = false;
 
-            return response;
-        }
+				await _applicationContext.SaveChangesAsync();
 
-        #endregion
-    }
+				_logger.LogInformation($"Result {result.Id} is successfully {request.Status.ToString()} ");
+
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				response = GenericException<ApproveResultRequest, ApproveResultResponse>(response, ex);
+			}
+
+			return response;
+		}
+
+		public async Task<LogoutResponse> Logout(LogoutRequest request)
+		{
+			LogoutResponse response = new LogoutResponse()
+			{
+				Request = request,
+				ResponseToken = Guid.NewGuid()
+			};
+
+			try
+			{
+				string requestUrl = $"{request.EndpointAddress}/auth/realms/{request.RealmName}/protocol/{request.Protocol}/logout";
+
+				List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("refresh_token", request.RefreshToken),
+					new KeyValuePair<string, string>("client_id", request.ClientId),
+					new KeyValuePair<string, string>("client_secret", request.ClientSecret)
+				};
+
+				FormUrlEncodedContent content = new FormUrlEncodedContent(list);
+				content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
+				{
+					CharSet = "UTF-8"
+				};
+
+				HttpRequestMessage httpRequest = new HttpRequestMessage
+				{
+					Method = HttpMethod.Post,
+					RequestUri = new Uri(requestUrl),
+					Content = content
+				};
+
+				httpRequest.Headers.Add("Authorization", $"Bearer {request.AccessToken}");
+
+				HttpClient httpClient = new HttpClient();
+				HttpResponseMessage responseMessage = await httpClient.SendAsync(httpRequest);
+
+				_logger.LogInformation($"Access {request.AccessToken} is successfully logout from Keycloak");
+
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				response = GenericException<LogoutRequest, LogoutResponse>(response, ex);
+			}
+
+			return response;
+		}
+
+		#endregion
+	}
 }

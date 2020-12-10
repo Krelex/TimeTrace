@@ -10,5 +10,6 @@ namespace TimeTraceService.Application
         Task<GetPendingResultsResponse> GetPendingResults(GetPendingResultsRequest request);
         Task<DeactivateResultResponse> DeactivateResult(DeactivateResultRequest request);
         Task<ApproveResultResponse> ApproveResult(ApproveResultRequest request);
+        Task<LogoutResponse> Logout(LogoutRequest request);
     }
 }

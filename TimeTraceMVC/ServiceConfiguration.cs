@@ -43,6 +43,8 @@ namespace TimeTraceMVC
 		{
 			KeycloakSettings settings = configuration.GetSection(nameof(KeycloakSettings)).Get<KeycloakSettings>();
 
+			services.Configure<KeycloakSettings>(configuration.GetSection(nameof(KeycloakSettings)));
+
 			JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 			services.AddAuthentication(options =>
