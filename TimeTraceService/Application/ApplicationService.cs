@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,17 @@ namespace TimeTraceService.Application
 
         private readonly ApplicationContext _applicationContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<ApplicationService> _logger;
 
         #endregion
 
         #region Constructor
 
-        public ApplicationService(ApplicationContext applicationContext, IMapper mapper)
+        public ApplicationService(ApplicationContext applicationContext, IMapper mapper, ILogger<ApplicationService> logger)
         {
             _applicationContext = applicationContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         #endregion
@@ -123,6 +126,7 @@ namespace TimeTraceService.Application
 
             try
             {
+                _logger.LogInformation("jesi ovo uspio");
                 Result result = await _applicationContext.Result.Where(x => x.Id == request.ResultId).SingleAsync();
                 result.Active = false;
 
@@ -132,6 +136,7 @@ namespace TimeTraceService.Application
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 response = GenericException<DeactivateResultRequest, DeactivateResultResponse>(response, ex);
             }
 

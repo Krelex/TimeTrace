@@ -1,9 +1,24 @@
-# Inital Projcet setup
+# TimeTrace Web Application
+
+### About
+
+This simple application is for race results submissions and management. It's designed to work in a dockerd environment. Below I will describe how to install and setup Keycloak, Sql Server and application into local Docker environment.
+
+### Architecture
+
+**TimeTraceDatabase**        : Database source, becuase its based on Entity Framework Database First.
+**TimeTraceConfiugration**   : Configuration project, packages shared across more projects are placed here. Some configuration classes and Keycloak realm-configuration file are put here.
+**TimeTraceInfrastructure**  : Wrapper classes for MVC and service projects are placed here.
+**TimeTraceDataAcces**       : Repository project where EF context and models are scaffolded.
+**TimeTraceService**         : Business logic layer, connect dataAcces layer and presentation layer (MVC).
+**TimeTraceMVC**             : Presentation layer.
 
 ### Prerequisites
 
 - **Docker** - [Install guide](https://docs.docker.com/docker-for-windows/install/)
-- **Keycloak** - [Getting started guide](https://www.keycloak.org/getting-started/getting-started-docker)
+- **Keycloak** -	[Getting started guide](https://www.keycloak.org/getting-started/getting-started-docker)
+
+### Setup
 
 - **SQL Server** - [Download and setup](https://hub.docker.com/_/microsoft-mssql-server)
 
@@ -18,11 +33,12 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=NewSql123" -e "MSSQL_AGENT_ENABLED
 ```
 3. Add `Keycloak` database and `TimeTrace` database to new SQL Server instance
 
-4. Create database table and schema
-	- go to `TimeTrace.comapre.scmp` double click it
-	- press `Compare` and then `Update`
+4. Create database tables, schema and dataScript on 3 way:
+	- 1. Manually -> go to ~/TimeTraceDatabase/TimeTrace/ and execute all scripts from `Security` and `TimeTrace` folders.
+	- 2. Compare -> go to `TimeTrace.comapre.scmp` double click it, press `Compare` and then `Update`.
+	- 3. Publish -> go to `TimeTrace.comapre.scmp`double click it, execute it.
 
-- **Keycloak** = [Download and setup](https://hub.docker.com/r/jboss/keycloak/)
+- **Keycloak** - [Download and setup](https://hub.docker.com/r/jboss/keycloak/) 
 
 1. Create docker internal network for Keycloak
 
