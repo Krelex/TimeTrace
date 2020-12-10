@@ -59,6 +59,14 @@ if you get *java.lang.RuntimeException: Failed to connect to database* got to `K
 	- Take file from `~\TimeTrace\TimeTraceConfiguration\Keycloak\realm-configuration.json`
 	- Import it to Keycloak
 
+4. Give your admin user TimeTrace client role `admin`
+	- Open [Keycloak admin console](http://localhost:8080/auth/)
+	- Go to *Users*
+	- *Edit* admin user
+	- Go to *Role Mappings* tab
+	- Client Roles -> Select a client *TimeTrace* (write down)
+	- Select *admin* and press Add selected
+
 - **Application**
 
 1. Build docker image from soruce
@@ -84,3 +92,7 @@ dotnet ef dbcontext scaffold Name=Default Microsoft.EntityFrameworkCore.SqlServe
 --no-pluralize ^
 --force
 ```
+
+### :warning: Warning :warning:
+
+When all 3 containers are up and running use **http://host.docker.internal:8002/** to access the application in a browser.

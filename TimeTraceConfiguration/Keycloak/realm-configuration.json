@@ -735,7 +735,7 @@
         {
             "id": "c1622ac3-3b44-4923-9580-6dbf4958c498",
             "clientId": "TimeTrace",
-            "rootUrl": "http://localhost:3363/",
+            "rootUrl": "http://localhost:8002/",
             "adminUrl": "http://localhost:8080",
             "baseUrl": "http://localhost:8080",
             "surrogateAuthRequired": false,
