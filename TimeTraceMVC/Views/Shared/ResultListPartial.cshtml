@@ -1,0 +1,79 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList
+@using Microsoft.AspNetCore.Authorization
+@using TimeTraceService.Application.Enum
+@using TimeTraceMVC.Models.Enum
+
+@inject IAuthorizationService AuthorizationService
+
+@if (ViewBag.ResourceControler == ResourceEnum.Index)
+{
+    @Html.Raw("<div class=col-8>")
+    @Html.Raw("<h2>Leaderboard</h2>")
+}
+else if (ViewBag.ResourceControler == ResourceEnum.Admin)
+{
+    @Html.Raw("<div class=col-12>")
+    @Html.Raw("<h2>Approval table</h2>")
+}
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <td class="text-center">
+                    Rank
+                </td>
+                <td class="text-center">
+                    Name
+                </td>
+                <td class="text-center">
+                    Surename
+                </td>
+                <td class="text-center">
+                    Race time
+                </td>
+                @if ((await AuthorizationService.AuthorizeAsync(User, "TimeTraceAdmin")).Succeeded)
+                {
+                    <td class="text-center">
+                        Action
+                    </td>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.OnePageOfProducts)
+            {
+                <tr>
+                    <td>
+                        @item.RowNumber
+                    </td>
+                    <td>
+                        @item.FirstName
+                    </td>
+                    <td>
+                        @item.LastName
+                    </td>
+                    <td>
+                        @item.RaceTime
+                    </td>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, "TimeTraceAdmin")).Succeeded)
+                    {
+                        <td>
+                            @if (ViewBag.ResourceControler == ResourceEnum.Index)
+                            {
+                                @Html.ActionLink("Delete", "Deactivate", new { resultId = item.Id }, new { onclick = "return confirm('Do you want to delete result?');" })
+                            }
+                            else if (ViewBag.ResourceControler == ResourceEnum.Admin)
+                            {
+                                @Html.ActionLink("Approve", "Approve", new { resultId = item.Id, statusId = StatusEnum.Approved }, new { onclick = "return confirm('Do you want to approve result?');" })
+                                <br>
+                                @Html.ActionLink("Decline", "Approve", new { resultId = item.Id, statusId = StatusEnum.Declined }, new { onclick = "return confirm('do you want to decline result?');" })
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProducts, page => Url.Action("Index", new { page }))
+</div>

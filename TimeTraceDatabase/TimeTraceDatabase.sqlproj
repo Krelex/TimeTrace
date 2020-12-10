@@ -60,10 +60,13 @@
     <Folder Include="Security" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="TimeTrace\User.Time.sql" />
     <Build Include="Security\Application.sql" />
+    <Build Include="TimeTrace\Result.DCStatus.sql" />
+    <Build Include="TimeTrace\Result.sql" />
+    <None Include="TimeTraceDatabase.publish.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TimeTrace.compare.scmp" />
+    <None Include="TimeTrace\Result.DCStatus.Data.sql" />
   </ItemGroup>
 </Project>

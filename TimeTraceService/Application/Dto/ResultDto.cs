@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace TimeTraceDataAccess.ApplicationContext.Models
+namespace TimeTraceService.Application.Dto
 {
-    public partial class UserTime
+    public class ResultDto
     {
         public int Id { get; set; }
         public bool? Active { get; set; }

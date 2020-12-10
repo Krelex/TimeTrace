@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.IdentityModel.Tokens.Jwt;
 using TimeTraceConfiguration;
 using TimeTraceDataAccess.ApplicationContext;
+using TimeTraceMVC.Mapping;
 using TimeTraceService.Application;
 
 namespace TimeTraceMVC
@@ -24,11 +26,24 @@ namespace TimeTraceMVC
 			services.AddTransient<IApplicationService, ApplicationService>();
 			services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(configuration.GetConnectionString("Default")));
 
+			MapperConfiguration mappingConfig = new MapperConfiguration(mc =>
+			{
+				mc.AddProfile(new TimeTraceMappingProfile());
+			});
+
+			services.AddSingleton(mappingConfig.CreateMapper());
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy("TimeTraceAdmin", policy => policy.RequireClaim("client_role", "admin"));
+			});
 		}
 
 		private static void ConfigureKeycloak(IServiceCollection services, IConfiguration configuration)
 		{
 			KeycloakSettings settings = configuration.GetSection(nameof(KeycloakSettings)).Get<KeycloakSettings>();
+
+			services.Configure<KeycloakSettings>(configuration.GetSection(nameof(KeycloakSettings)));
 
 			JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
